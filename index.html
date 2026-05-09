@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Champions League Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            deep: '#001021',
+                            card: '#001c3d',
+                            gold: '#D4AF37',
+                            light: '#FFFFFF',
+                            hover: '#E5C158',
+                            danger: '#E53E3E'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hidden-section { display: none !important; }
+        .nav-btn.active { color: #D4AF37; border-color: #D4AF37; }
+    </style>
+</head>
+<body class="bg-brand-deep text-brand-light min-h-screen flex flex-col">
+    <header class="bg-brand-card shadow-lg sticky top-0 z-50 border-b border-brand-gold/20">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-brand-gold uppercase tracking-widest flex items-center gap-3">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                Champions Manager
+            </h1>
+            <nav class="flex gap-8">
+                <button onclick="navigate('home')" class="nav-btn active text-brand-light hover:text-brand-gold transition-colors font-semibold border-b-2 border-transparent pb-1">Inicio</button>
+                <button onclick="navigate('teams')" class="nav-btn text-brand-light hover:text-brand-gold transition-colors font-semibold border-b-2 border-transparent pb-1">Equipos</button>
+                <button onclick="navigate('matches')" class="nav-btn text-brand-light hover:text-brand-gold transition-colors font-semibold border-b-2 border-transparent pb-1">Partidos</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-6 py-10">
+        <section id="home" class="view-section animate-fade-in h-full flex flex-col justify-center">
+            <div class="bg-brand-card rounded-3xl p-16 text-center shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-brand-gold/30 relative overflow-hidden mt-10">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518605368461-1ee7c51480f4?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+                <div class="relative z-10">
+                    <h2 class="text-6xl font-black text-brand-gold mb-8 uppercase tracking-tighter drop-shadow-lg">La Gloria Eterna</h2>
+                    <p class="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light mb-12">
+                        Administra el torneo de clubes más prestigioso del mundo. Aquí se forjan las leyendas, donde cada pase, cada gol y cada decisión estratégica te acerca a la inmortalidad futbolística. Gestiona equipos de élite y programa partidos memorables.
+                    </p>
+                    <button onclick="navigate('teams')" class="bg-gradient-to-r from-brand-gold to-brand-hover text-brand-deep px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(212,175,55,0.5)]">
+                        Comenzar Gestión
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="teams" class="view-section hidden-section">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-4xl font-black text-brand-gold uppercase tracking-wide">Gestión de Equipos</h2>
+                <button onclick="openTeamModal()" class="bg-brand-gold text-brand-deep px-6 py-3 rounded-xl font-bold hover:bg-brand-hover transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Nuevo Equipo
+                </button>
+            </div>
+            <div id="teamsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+        </section>
+
+        <section id="matches" class="view-section hidden-section">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-4xl font-black text-brand-gold uppercase tracking-wide">Gestión de Partidos</h2>
+                <button onclick="openMatchModal()" class="bg-brand-gold text-brand-deep px-6 py-3 rounded-xl font-bold hover:bg-brand-hover transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Nuevo Partido
+                </button>
+            </div>
+            <div id="matchesGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-8"></div>
+        </section>
+    </main>
+
+    <footer class="bg-brand-card border-t border-brand-gold/20 py-8 mt-auto">
+        <div class="container mx-auto px-6 text-center text-gray-500 font-medium">
+            &copy; 2026 Champions League Manager. Diseñado para la gloria.
+        </div>
+    </footer>
+
+    <div id="teamModal" class="fixed inset-0 bg-brand-deep/90 hidden flex items-center justify-center z-[100] backdrop-blur-md transition-opacity">
+        <div class="bg-brand-card border border-brand-gold/30 rounded-2xl w-full max-w-md p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative">
+            <button onclick="closeModals()" class="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 id="teamModalTitle" class="text-3xl font-bold text-brand-gold mb-8 uppercase tracking-wide">Nuevo Equipo</h3>
+            <form id="teamForm" class="flex flex-col gap-5">
+                <input type="hidden" id="teamId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Nombre del Equipo</label>
+                    <input type="text" id="teamName" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold text-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">País</label>
+                    <input type="text" id="teamCountry" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold text-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Estadio</label>
+                    <input type="text" id="teamStadium" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold text-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Director Técnico</label>
+                    <input type="text" id="teamCoach" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold text-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Puntos</label>
+                    <input type="number" id="teamPoints" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold text-white transition-all" min="0">
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="button" onclick="closeModals()" class="px-6 py-3 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-800 transition-colors font-medium">Cancelar</button>
+                    <button type="submit" class="px-6 py-3 rounded-xl bg-brand-gold text-brand-deep font-bold hover:bg-brand-hover transition-colors shadow-lg">Guardar Equipo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="matchModal" class="fixed inset-0 bg-brand-deep/90 hidden flex items-center justify-center z-[100] backdrop-blur-md transition-opacity">
+        <div class="bg-brand-card border border-brand-gold/30 rounded-2xl w-full max-w-xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative max-h-[95vh] overflow-y-auto">
+            <button onclick="closeModals()" class="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 id="matchModalTitle" class="text-3xl font-bold text-brand-gold mb-8 uppercase tracking-wide">Nuevo Partido</h3>
+            <form id="matchForm" class="flex flex-col gap-6">
+                <input type="hidden" id="matchId">
+                <div class="bg-brand-deep p-6 rounded-xl border border-brand-gold/10">
+                    <h4 class="text-brand-gold font-semibold mb-4 border-b border-brand-gold/20 pb-2">Resultado</h4>
+                    <div class="grid grid-cols-2 gap-6 items-end">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Equipo Local</label>
+                                <select id="matchLocalTeam" required class="w-full bg-brand-card border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white"></select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Goles Local</label>
+                                <input type="number" id="matchLocalGoals" required class="w-full bg-brand-card border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white text-center text-xl font-bold" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Equipo Visitante</label>
+                                <select id="matchVisitorTeam" required class="w-full bg-brand-card border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white"></select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Goles Visitante</label>
+                                <input type="number" id="matchVisitorGoals" required class="w-full bg-brand-card border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white text-center text-xl font-bold" min="0" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Fecha</label>
+                        <input type="date" id="matchDate" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Fase</label>
+                        <select id="matchPhase" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white">
+                            <option value="Fase de Grupos">Fase de Grupos</option>
+                            <option value="Octavos de Final">Octavos de Final</option>
+                            <option value="Cuartos de Final">Cuartos de Final</option>
+                            <option value="Semifinal">Semifinal</option>
+                            <option value="Final">Final</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Estadio</label>
+                    <input type="text" id="matchStadium" required class="w-full bg-brand-deep border border-brand-gold/20 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-gold text-white">
+                </div>
+                <div class="flex justify-end gap-4 mt-4">
+                    <button type="button" onclick="closeModals()" class="px-6 py-3 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-800 transition-colors font-medium">Cancelar</button>
+                    <button type="submit" class="px-6 py-3 rounded-xl bg-brand-gold text-brand-deep font-bold hover:bg-brand-hover transition-colors shadow-lg">Guardar Partido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="toast" class="fixed bottom-6 right-6 px-6 py-4 rounded-xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 z-[200] font-medium flex items-center gap-3">
+        <span id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
