@@ -91,7 +91,7 @@ async function loadTeams() {
 
         grid.innerHTML = teams.map(team => `
             <div class="bg-brand-card rounded-2xl p-6 border border-brand-gold/10 hover:border-brand-gold transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] group relative transform hover:-translate-y-1">
-                <div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                <div class="absolute top-4 right-4 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 z-20">
                     <button onclick="editTeam('${team.id}')" class="text-brand-gold hover:text-white transition p-2 bg-brand-deep rounded-lg hover:bg-brand-gold/20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
                     <button onclick="deleteTeam('${team.id}')" class="text-brand-danger hover:text-white transition p-2 bg-brand-deep rounded-lg hover:bg-brand-danger/20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                 </div>
@@ -202,7 +202,7 @@ async function loadMatches() {
             return `
             <div class="bg-brand-card rounded-2xl p-6 border border-brand-gold/10 hover:border-brand-gold/50 transition-all duration-300 shadow-xl relative group overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent to-brand-deep/50 pointer-events-none"></div>
-                <div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+                <div class="absolute top-4 right-4 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 z-20">
                     <button onclick="editMatch('${match.id}')" class="text-brand-gold hover:text-white transition p-2 bg-brand-deep/80 backdrop-blur rounded-lg hover:bg-brand-gold/20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
                     <button onclick="deleteMatch('${match.id}')" class="text-brand-danger hover:text-white transition p-2 bg-brand-deep/80 backdrop-blur rounded-lg hover:bg-brand-danger/20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                 </div>
@@ -215,25 +215,25 @@ async function loadMatches() {
                     </span>
                 </div>
                 
-                <div class="flex justify-between items-center bg-brand-deep rounded-xl p-5 mb-5 border border-brand-gold/5 relative z-10 shadow-inner">
-                    <div class="text-center w-2/5 flex flex-col items-center gap-2">
-                        <div class="w-12 h-12 rounded-full bg-brand-card flex items-center justify-center border ${localWins ? 'border-brand-gold' : 'border-white/10'} shadow-lg">
-                            <span class="font-bold text-sm text-white">${match.equipoLocal?.nombre ? match.equipoLocal.nombre.substring(0, 3).toUpperCase() : '???'}</span>
+                <div class="flex justify-between items-center bg-brand-deep rounded-xl p-3 md:p-5 mb-5 border border-brand-gold/5 relative z-10 shadow-inner">
+                    <div class="text-center w-[35%] flex flex-col items-center gap-2">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-card flex items-center justify-center border ${localWins ? 'border-brand-gold' : 'border-white/10'} shadow-lg">
+                            <span class="font-bold text-xs md:text-sm text-white">${match.equipoLocal?.nombre ? match.equipoLocal.nombre.substring(0, 3).toUpperCase() : '???'}</span>
                         </div>
-                        <div class="font-bold text-base truncate w-full px-2 ${localWins ? 'text-brand-gold' : 'text-white'}" title="${match.equipoLocal?.nombre}">${match.equipoLocal?.nombre || 'Desconocido'}</div>
+                        <div class="font-bold text-sm md:text-base truncate w-full px-1 md:px-2 ${localWins ? 'text-brand-gold' : 'text-white'}" title="${match.equipoLocal?.nombre}">${match.equipoLocal?.nombre || 'Desconocido'}</div>
                     </div>
                     
-                    <div class="flex items-center justify-center gap-4 w-1/5 bg-brand-card py-3 px-4 rounded-xl border border-brand-gold/20 shadow-md">
-                        <span class="text-3xl font-black ${localWins ? 'text-brand-gold' : 'text-white'}">${localGoals}</span>
-                        <span class="text-gray-500 font-bold">-</span>
-                        <span class="text-3xl font-black ${visitorWins ? 'text-brand-gold' : 'text-white'}">${visitorGoals}</span>
+                    <div class="flex items-center justify-center gap-2 md:gap-4 w-[30%] bg-brand-card py-2 md:py-3 px-2 md:px-4 rounded-xl border border-brand-gold/20 shadow-md">
+                        <span class="text-xl md:text-3xl font-black ${localWins ? 'text-brand-gold' : 'text-white'}">${localGoals}</span>
+                        <span class="text-gray-500 font-bold mx-1">-</span>
+                        <span class="text-xl md:text-3xl font-black ${visitorWins ? 'text-brand-gold' : 'text-white'}">${visitorGoals}</span>
                     </div>
                     
-                    <div class="text-center w-2/5 flex flex-col items-center gap-2">
-                        <div class="w-12 h-12 rounded-full bg-brand-card flex items-center justify-center border ${visitorWins ? 'border-brand-gold' : 'border-white/10'} shadow-lg">
-                            <span class="font-bold text-sm text-white">${match.equipoVisitante?.nombre ? match.equipoVisitante.nombre.substring(0, 3).toUpperCase() : '???'}</span>
+                    <div class="text-center w-[35%] flex flex-col items-center gap-2">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-card flex items-center justify-center border ${visitorWins ? 'border-brand-gold' : 'border-white/10'} shadow-lg">
+                            <span class="font-bold text-xs md:text-sm text-white">${match.equipoVisitante?.nombre ? match.equipoVisitante.nombre.substring(0, 3).toUpperCase() : '???'}</span>
                         </div>
-                        <div class="font-bold text-base truncate w-full px-2 ${visitorWins ? 'text-brand-gold' : 'text-white'}" title="${match.equipoVisitante?.nombre}">${match.equipoVisitante?.nombre || 'Desconocido'}</div>
+                        <div class="font-bold text-sm md:text-base truncate w-full px-1 md:px-2 ${visitorWins ? 'text-brand-gold' : 'text-white'}" title="${match.equipoVisitante?.nombre}">${match.equipoVisitante?.nombre || 'Desconocido'}</div>
                     </div>
                 </div>
                 
