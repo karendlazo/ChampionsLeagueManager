@@ -58,23 +58,41 @@ function closeModals() {
 async function fetchAPI(endpoint, options = {}) {
     try {
         const url = `${API_URL}${endpoint}`;
-        console.log("Petición a:", url);
-        const response = await fetch(`${API_URL}${endpoint}`, {
+        const response = await fetch(url, {
             ...options,
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
         });
-        if (!response.ok) throw new Error('Error en la petición');
+        
+        // Si es 204 (No Content, como al eliminar), no hay JSON que parsear
+        if (response.status === 204) return {};
+        
         const text = await response.text();
-        return text ? JSON.parse(text) : {};
+        const data = text ? JSON.parse(text) : {};
+        
+        if (!response.ok) {
+            // Atrapamos los errores "bonitos" del GlobalExceptionHandler
+            let message = 'Error en la petición';
+            if (data.error) {
+                message = data.error; // Errores de negocio o BD (409)
+            } else if (typeof data === 'object') {
+                const firstError = Object.values(data)[0];
+                if (firstError) message = firstError; // Errores de validación (400)
+            }
+            showToast(message, true);
+            throw new Error(message);
+        }
+        return data;
     } catch (error) {
-        console.error("Error en fetchAPI:", error);
-        showToast('Error de conexión con el servidor', true);
+        if (!error.message || error.message === 'Failed to fetch') {
+            showToast('Error de conexión con el servidor', true);
+        }
         throw error;
     }
 }
+
 
 async function loadTeams() {
     const grid = document.getElementById('teamsGrid');
@@ -137,6 +155,7 @@ async function editTeam(id) {
 document.getElementById('teamForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('teamId').value;
+    
     const teamData = {
         nombre: document.getElementById('teamName').value,
         pais: document.getElementById('teamCountry').value,
@@ -147,17 +166,15 @@ document.getElementById('teamForm').addEventListener('submit', async (e) => {
 
     try {
         if (id) {
-            teamData.id = id;
             await fetchAPI(`/equipos/${id}`, {
                 method: 'PUT',
-                body: JSON.stringify(teamData)
+                body: JSON.stringify(teamData) // Sin mandar el ID en el body
             });
             showToast('Equipo actualizado exitosamente');
         } else {
-            teamData.id = Date.now().toString();
             await fetchAPI('/equipos', {
                 method: 'POST',
-                body: JSON.stringify(teamData)
+                body: JSON.stringify(teamData) // Sin crear un ID de mentira
             });
             showToast('Equipo creado exitosamente');
         }
@@ -167,6 +184,7 @@ document.getElementById('teamForm').addEventListener('submit', async (e) => {
         console.error("Error guardando equipo:", error);
     }
 });
+
 
 async function deleteTeam(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este equipo? Esta acción no se puede deshacer.')) {
@@ -303,18 +321,18 @@ document.getElementById('matchForm').addEventListener('submit', async (e) => {
     const localTeamId = document.getElementById('matchLocalTeam').value;
     const visitorTeamId = document.getElementById('matchVisitorTeam').value;
     
+    // Validar localmente por si acaso
     if (localTeamId === visitorTeamId) {
         showToast('Un equipo no puede jugar contra sí mismo', true);
         return;
     }
     
-    const localTeam = window.currentTeams.find(t => String(t.id) === String(localTeamId));
-    const visitorTeam = window.currentTeams.find(t => String(t.id) === String(visitorTeamId));
-    
     const id = document.getElementById('matchId').value;
+    
+    // Enviamos exactamente lo que el DTO pide
     const matchData = {
-        equipoLocal: localTeam,
-        equipoVisitante: visitorTeam,
+        equipoLocalId: parseInt(localTeamId),
+        equipoVisitanteId: parseInt(visitorTeamId),
         golesLocal: parseInt(document.getElementById('matchLocalGoals').value) || 0,
         golesVisitante: parseInt(document.getElementById('matchVisitorGoals').value) || 0,
         fecha: document.getElementById('matchDate').value,
@@ -324,14 +342,12 @@ document.getElementById('matchForm').addEventListener('submit', async (e) => {
 
     try {
         if (id) {
-            matchData.id = id;
             await fetchAPI(`/partidos/${id}`, {
                 method: 'PUT',
                 body: JSON.stringify(matchData)
             });
             showToast('Partido actualizado exitosamente');
         } else {
-            matchData.id = Date.now().toString();
             await fetchAPI('/partidos', {
                 method: 'POST',
                 body: JSON.stringify(matchData)
@@ -344,6 +360,7 @@ document.getElementById('matchForm').addEventListener('submit', async (e) => {
         console.error("Error guardando partido:", error);
     }
 });
+
 
 async function deleteMatch(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este partido? La historia se borrará.')) {
